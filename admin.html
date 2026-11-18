@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yönetim Paneli — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .admin-card { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 22px; margin-bottom: 24px; }
+    .table-container { width: 100%; overflow-x: auto; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
+    th { color: var(--text-muted); font-weight: 600; background: rgba(0,0,0,0.2); }
+    .badge-tag { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; display: inline-block; }
+    .badge-success { background: rgba(0,255,136,0.15); color: var(--valorant-red); }
+    .badge-danger { background: rgba(255,75,75,0.15); color: #ff4b4b; }
+    .action-btn { padding: 6px 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; font-size: 12px; margin-right: 4px; }
+  </style>
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <!-- Güvenlik Kontrolü: Admin girişi yapılmadıysa giriş sayfasına at -->
+  <script>
+    if (localStorage.getItem('vanguardAdminAuth') !== 'true') {
+      window.location.href = 'admin-giris.html';
+    }
+  </script>
+
+  <div class="container" style="max-width: 1200px; padding: 30px 15px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+      <div>
+        <span class="official-badge" style="margin-bottom: 6px; display: inline-block;">YÖNETİM MERKEZİ</span>
+        <h1 style="font-size: 28px; font-weight: 800; color: #fff;">MAMİXVP Admin Paneli</h1>
+      </div>
+      <button onclick="adminLogout()" class="btn btn-outline" style="border-color: #ff4b4b; color: #ff4b4b; cursor: pointer;">Çıkış Yap</button>
+    </div>
+
+    <!-- İSTATİSTİK KARTLARI -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 30px;">
+      <div class="admin-card" style="margin-bottom: 0;">
+        <div style="color: var(--text-muted); font-size: 13px;">Toplam Oyuncu</div>
+        <div id="stat-total-users" style="font-size: 26px; font-weight: 800; color: #fff; margin-top: 5px;">0</div>
+      </div>
+      <div class="admin-card" style="margin-bottom: 0;">
+        <div style="color: var(--text-muted); font-size: 13px;">Bekleyen / Toplam İşlem</div>
+        <div id="stat-total-requests" style="font-size: 26px; font-weight: 800; color: var(--valorant-red); margin-top: 5px;">0</div>
+      </div>
+    </div>
+
+    <!-- TALEPLER (VP Yükleme & Çekim / İade) -->
+    <div class="admin-card">
+      <h3 style="font-size: 18px; margin-bottom: 10px; color: #fff;">📥 Gelen VP Yatırım ve Çekim Talepleri</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Oyuncu</th>
+              <th>İşlem Türü</th>
+              <th>Detay / Tutar</th>
+              <th>Tarih</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+          <tbody id="requests-table-body">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KULLANICI LİSTESİ VE YÖNETİMİ -->
+    <div class="admin-card">
+      <h3 style="font-size: 18px; margin-bottom: 10px; color: #fff;">👥 Kayıtlı Oyuncular ve Bakiye Yönetimi</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Kullanıcı Adı</th>
+              <th>Şifre</th>
+              <th>VP Bakiye</th>
+              <th>Durum</th>
+              <th>İşlemler</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body">
+            <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, update, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.adminLogout = function() {
+      localStorage.removeItem('vanguardAdminAuth');
+      window.location.href = 'admin-giris.html';
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      fetchUsers();
+      fetchRequests();
+    });
+
+    function fetchUsers() {
+      const usersRef = ref(db, 'users');
+      get(usersRef).then((snapshot) => {
+        const tbody = document.getElementById('users-table-body');
+        tbody.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Kayıtlı kullanıcı yok.</td></tr>`;
+          document.getElementById('stat-total-users').textContent = '0';
+          return;
+        }
+
+        const users = snapshot.val();
+        let count = 0;
+
+        Object.keys(users).forEach((username) => {
+          count++;
+          const u = users[username];
+          const isBanned = u.banned ? true : false;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-weight: 700; color: #fff;">${username}</td>
+            <td style="color: var(--text-muted);">${u.password || '*****'}</td>
+            <td><span style="color: var(--valorant-red); font-weight: 700;">${u.bakiye || 0} VP</span></td>
+            <td>${isBanned ? '<span class="badge-tag badge-danger">Yasaklı</span>' : '<span class="badge-tag badge-success">Aktif</span>'}</td>
+            <td>
+              <button class="action-btn" style="background: #333; color: #fff;" onclick="degistirBakiye('${username}', ${u.bakiye || 0})">VP Düzenle</button>
+              ${isBanned ? 
+                `<button class="action-btn badge-success" onclick="userDurum('${username}', false)">Aktif Et</button>` : 
+                `<button class="action-btn badge-danger" onclick="userDurum('${username}', true)">Banla</button>`
+              }
+              <button class="action-btn" style="background: #ff4b4b; color: #fff;" onclick="kullaniciSil('${username}')">Sil</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('stat-total-users').textContent = count;
+      });
+    }
+
+    function fetchRequests() {
+      const reqRef = ref(db, 'requests');
+      get(reqRef).then((snapshot) => {
+        const tbody = document.getElementById('requests-table-body');
+        tbody.innerHTML = '';
+
+        if (!snapshot.exists()) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep yok.</td></tr>`;
+          document.getElementById('stat-total-requests').textContent = '0';
+          return;
+        }
+
+        const reqs = snapshot.val();
+        let count = 0;
+
+        Object.keys(reqs).forEach((reqId) => {
+          count++;
+          const r = reqs[reqId];
+          const tarihStr = r.tarih ? new Date(r.tarih).toLocaleString('tr-TR') : 'Bilinmiyor';
+          const isYatirim = r.tur === 'Yatırım';
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-weight: 700; color: #fff;">${r.username}</td>
+            <td><span class="badge-tag ${isYatirim ? 'badge-success' : 'badge-danger'}">${r.tur}</span></td>
+            <td style="color: #ddd;">${r.detay}</td>
+            <td style="color: var(--text-muted); font-size: 12px;">${tarihStr}</td>
+            <td>
+              <button class="action-btn badge-success" onclick="onaylaTalep('${reqId}', '${r.username}', ${r.tutar || 0}, '${r.tur}')">Onayla & İşle</button>
+              <button class="action-btn badge-danger" onclick="talepSil('${reqId}')">Reddet / Sil</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('stat-total-requests').textContent = count;
+      });
+    }
+
+    window.degistirBakiye = function(username, mevcutBakiye) {
+      const yeni = prompt(`${username} için yeni VP miktarını gir (VP):`, mevcutBakiye);
+      if (yeni !== null && !isNaN(yeni)) {
+        update(ref(db, 'users/' + username), { bakiye: Number(yeni) }).then(() => {
+          alert("VP bakiyesi güncellendi!");
+          fetchUsers();
+        });
+      }
+    };
+
+    window.userDurum = function(username, durum) {
+      update(ref(db, 'users/' + username), { banned: durum }).then(() => {
+        alert(durum ? `${username} banlandı!` : `${username} banı kaldırıldı!`);
+        fetchUsers();
+      });
+    };
+
+    window.kullaniciSil = function(username) {
+      if (confirm(`${username} adlı oyuncuyu kalıcı olarak silmek istediğine emin misin?`)) {
+        remove(ref(db, 'users/' + username)).then(() => {
+          alert("Kullanıcı silindi.");
+          fetchUsers();
+        });
+      }
+    };
+
+    window.onaylaTalep = function(reqId, username, tutar, tur) {
+      const userRef = ref(db, 'users/' + username);
+      get(userRef).then((snapshot) => {
+        if (!snapshot.exists()) {
+          alert("Kullanıcı bulunamadı, talep siliniyor.");
+          remove(ref(db, 'requests/' + reqId));
+          fetchRequests();
+          return;
+        }
+
+        const userData = snapshot.val();
+        let bakiye = Number(userData.bakiye) || 0;
+
+        if (tur === 'Yatırım') {
+          bakiye += Number(tutar);
+        } else if (tur === 'Çekim') {
+          if (bakiye < Number(tutar)) {
+            alert(`Dikkat: Oyuncunun VP bakiyesi yetersiz (${bakiye} VP), yine de çekim onaylansın mı?`);
+          }
+          bakiye -= Number(tutar);
+        }
+
+        update(userRef, { bakiye: bakiye }).then(() => {
+          remove(ref(db, 'requests/' + reqId)).then(() => {
+            alert(`Talep başarıyla onaylandı! İşlem tutarı oyuncu bakiyesine yansıtıldı.`);
+            fetchRequests();
+            fetchUsers();
+          });
+        });
+      });
+    };
+
+    window.talepSil = function(reqId) {
+      if (confirm("Bu talebi reddetmek/silmek istediğine emin misin?")) {
+        remove(ref(db, 'requests/' + reqId)).then(() => {
+          alert("Talep silindi.");
+          fetchRequests();
+        });
+      }
+    };
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

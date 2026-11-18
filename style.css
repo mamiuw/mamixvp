@@ -1,0 +1,144 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+:root {
+  --valorant-red:#ff4655;
+  --valorant-red-2:#d93646;
+  --bg-dark:#080c12;
+  --bg-panel:rgba(17,24,33,.88);
+  --bg-panel-2:rgba(11,16,23,.94);
+  --border-color:rgba(255,255,255,.12);
+  --border-hot:rgba(255,70,85,.58);
+  --text-main:#f4f1eb;
+  --text-muted:#8d9aaa;
+  --cyan:#63d8ff;
+  --gold:#e9c46a;
+  --shadow:0 18px 60px rgba(0,0,0,.42);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;padding:0;min-height:100vh;overflow-x:hidden;color:var(--text-main);
+ background:
+   radial-gradient(circle at 12% 12%,rgba(255,70,85,.10),transparent 30%),
+   radial-gradient(circle at 88% 28%,rgba(99,216,255,.06),transparent 28%),
+   linear-gradient(135deg,#070b10 0%,#0d141d 52%,#080c12 100%);
+ font-family:'Rajdhani','Barlow Condensed',Impact,'Arial Narrow',sans-serif;
+ letter-spacing:.02em;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+ background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+ background-size:38px 38px;
+ mask-image:linear-gradient(to bottom,rgba(0,0,0,.85),transparent 90%);
+}
+body:after{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+ background:linear-gradient(115deg,transparent 0 46%,rgba(255,70,85,.045) 47%,transparent 48%);
+ animation:scanSweep 9s linear infinite;
+}
+@keyframes scanSweep{0%{transform:translateX(-20%)}100%{transform:translateX(20%)}}
+a{transition:.2s ease}
+a:hover{filter:brightness(1.12)}
+.container{width:100%;box-sizing:border-box;margin:0 auto;position:relative;z-index:2}
+.container > *{position:relative}
+h1,h2,h3,h4,h5,h6,.btn,.official-badge,label,.brand-mark,.nav-link{
+ font-family:'Barlow Condensed','Rajdhani',Impact,'Arial Narrow',sans-serif;
+ text-transform:uppercase;
+ letter-spacing:.055em;
+}
+h1,h2,h3,h4{ text-shadow:0 0 28px rgba(255,70,85,.08)}
+.btn{
+ border-radius:3px;font-weight:800;cursor:pointer;border:1px solid transparent;transition:.22s ease;
+ display:inline-block;text-align:center;position:relative;overflow:hidden;isolation:isolate;
+ box-shadow:0 8px 24px rgba(0,0,0,.18)
+}
+.btn:before{
+ content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.22) 50%,transparent 80%);
+ transform:translateX(-130%);transition:.45s;z-index:-1
+}
+.btn:hover:before{transform:translateX(130%)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,70,85,.16)}
+.btn-primary{
+ background:linear-gradient(135deg,var(--valorant-red),#b92235);color:#fff;border-color:rgba(255,255,255,.12);
+ clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))
+}
+.btn-primary:hover{background:linear-gradient(135deg,#ff5a68,var(--valorant-red))}
+.btn-outline{
+ background:rgba(255,255,255,.025);border-color:rgba(255,255,255,.18);color:#fff;
+ clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px))
+}
+.btn-outline:hover{border-color:var(--valorant-red);color:#fff;background:rgba(255,70,85,.07)}
+.form-group{margin-bottom:16px;text-align:left}
+.form-group label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:700}
+.form-control{
+ width:100%;padding:13px 14px;background:rgba(0,0,0,.34);border:1px solid var(--border-color);
+ border-radius:4px;color:#fff;font-size:14px;box-sizing:border-box;font-family:'Rajdhani',sans-serif;
+ transition:.2s
+}
+.form-control:focus{outline:none;border-color:var(--valorant-red);box-shadow:0 0 0 3px rgba(255,70,85,.08),0 0 25px rgba(255,70,85,.08)}
+.official-badge{
+ background:linear-gradient(90deg,rgba(255,70,85,.14),rgba(255,70,85,.04));
+ color:var(--valorant-red);border:1px solid rgba(255,70,85,.38);padding:5px 11px;border-radius:2px;
+ font-size:10px;font-weight:900;display:inline-block;box-shadow:inset 0 0 18px rgba(255,70,85,.04)
+}
+.ticker-bar{
+ background:linear-gradient(90deg,rgba(255,70,85,.08),rgba(8,12,18,.84),rgba(99,216,255,.04));
+ border:1px solid var(--border-color)!important;border-radius:3px!important;box-shadow:var(--shadow),inset 0 0 40px rgba(255,255,255,.015);
+ position:relative;overflow:hidden
+}
+.ticker-bar:after{content:"";position:absolute;left:0;top:0;width:70px;height:2px;background:var(--valorant-red);box-shadow:0 0 18px var(--valorant-red)}
+.game-card-item,.arena-panel,.control-panel,.admin-card{
+ background:linear-gradient(145deg,rgba(22,30,41,.93),rgba(9,14,20,.93))!important;
+ border:1px solid var(--border-color)!important;border-radius:3px!important;box-shadow:var(--shadow);
+ position:relative;overflow:hidden
+}
+.game-card-item:before,.arena-panel:before,.control-panel:before,.admin-card:before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(125deg,transparent 0 62%,rgba(255,70,85,.06) 63%,transparent 64%);
+}
+.game-card-item:after{
+ content:"";position:absolute;left:0;top:0;width:34%;height:2px;background:var(--valorant-red);
+ box-shadow:0 0 20px rgba(255,70,85,.65);transition:.3s
+}
+.game-card-item:hover{border-color:var(--border-hot)!important;transform:translateY(-6px)!important;box-shadow:0 22px 55px rgba(0,0,0,.48),0 0 28px rgba(255,70,85,.08)}
+.game-card-item:hover:after{width:100%}
+.game-card-item h4{font-size:21px!important}
+.games-grid{position:relative}
+.game-card-item p{font-family:'Rajdhani',sans-serif}
+.nav-link{color:var(--text-muted);text-decoration:none;font-weight:700;font-size:14px}
+.brand-mark{font-size:26px!important;font-weight:900!important;color:#fff!important;letter-spacing:.1em!important}
+.brand-mark span{color:var(--valorant-red)!important}
+.nav-shell{position:relative;z-index:10}
+.nav-shell:after{
+ content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:linear-gradient(90deg,transparent,var(--valorant-red),transparent);opacity:.6
+}
+.hero-grid h1{font-size:clamp(44px,7vw,76px)!important;line-height:.92!important;letter-spacing:.02em!important}
+.hero-grid h1:after{
+ content:"";display:block;width:95px;height:3px;background:var(--valorant-red);margin:18px auto 0;
+ box-shadow:0 0 22px rgba(255,70,85,.8);clip-path:polygon(0 0,100% 0,85% 100%,0 100%)
+}
+.stat-card{position:relative;overflow:hidden}
+.stat-card:before{content:"";position:absolute;inset:auto -20% 0;height:1px;background:var(--valorant-red);box-shadow:0 0 20px var(--valorant-red)}
+.mamix-watermark{
+ position:fixed;right:-60px;bottom:35px;z-index:1;font-family:Impact,sans-serif;font-size:120px;
+ color:rgba(255,255,255,.018);letter-spacing:.05em;pointer-events:none;transform:rotate(-12deg)
+}
+.falling-valorant-container{position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:1;overflow:hidden}
+.falling-val{position:absolute;color:rgba(255,70,85,.10);font-weight:900;animation:fall linear infinite;text-shadow:0 0 16px rgba(255,70,85,.35)}
+@keyframes fall{0%{transform:translateY(-50px) rotate(0deg);opacity:0}20%{opacity:.8}100%{transform:translateY(105vh) rotate(360deg);opacity:0}}
+@keyframes pulseRed{0%,100%{box-shadow:0 0 0 rgba(255,70,85,0)}50%{box-shadow:0 0 34px rgba(255,70,85,.12)}}
+.pulse-red{animation:pulseRed 2.6s ease-in-out infinite}
+.valorant-watermark{position:absolute;right:25px;top:15px;color:rgba(255,255,255,.08);font:900 11px 'Barlow Condensed';letter-spacing:.3em}
+.game-visual{
+ height:190px;margin:-22px -22px 18px;border-bottom:1px solid rgba(255,255,255,.1);
+ position:relative;overflow:hidden;background:radial-gradient(circle at 65% 42%,rgba(255,70,85,.16),transparent 40%),#0b1017
+}
+.game-visual .visual-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:28px 28px;transform:perspective(350px) rotateX(58deg) translateY(70px);opacity:.55}
+.game-visual svg{position:absolute;inset:15px;width:100%;height:160px;filter:drop-shadow(0 18px 22px rgba(0,0,0,.7))}
+.game-visual .tag{position:absolute;left:13px;top:12px;font:800 10px 'Barlow Condensed';letter-spacing:.18em;color:rgba(255,255,255,.65)}
+@media(max-width:760px){
+ .hero-grid h1{font-size:48px!important}
+ .game-visual{height:165px}
+ .game-visual svg{height:140px}
+}

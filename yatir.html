@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VP Yükle / Yatır — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="max-width: 1200px; padding: 20px 15px;">
+    
+    <!-- ÜST MENÜ / NAVBAR -->
+    <div class="nav-shell" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;">
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <h2 class="brand-mark" style="font-size: 24px; font-weight: 800; color: #fff; margin: 0;">MAMİXVP<span style="color: var(--valorant-red);"></span></h2>
+        <div style="display: flex; gap: 15px;">
+          <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Ana Sayfa</a>
+          <a href="oyunlar.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Oyunlar</a>
+          <a href="yatir.html" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;">VP Yükle</a>
+          <a href="cek.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Çek / Market</a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted);">Bakiye:</span>
+          <span id="live-bakiye" style="font-weight: 800; color: var(--valorant-red); font-size: 16px;">0 VP</span>
+        </div>
+        <div id="auth-buttons"></div>
+      </div>
+    </div>
+
+    <div style="max-width: 780px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <span class="official-badge" style="margin-bottom: 8px; display: inline-block;">OTOMATİK KOD DOĞRULAMA</span>
+        <h1 style="font-size: 30px; font-weight: 800; color: #fff;">➕ VP Kodu / Gamepass ile Yükle</h1>
+        <p style="color: var(--text-muted); margin-top: 6px; font-size: 14px;">Riot VP kodunu gir veya özel skin eşya yöntemiyle anında hesabına VP bakiyesi yükle.</p>
+      </div>
+
+      <div style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; margin-bottom: 24px;">
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Riot ID'n *</label>
+          <input type="text" id="deposit-username" class="form-control" placeholder="Örn: JettMain#TR1" required style="margin-top: 6px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Ödeme Yöntemi *</label>
+          <select id="deposit-method" class="form-control" style="margin-top: 6px; background: var(--bg-panel); color: #fff;">
+            <option value="VP Kodu">Riot VP E-Pin Kodu (Örn: TR89-XXXX-YYYY)</option>
+            <option value="Skin Satış / Yatırım">Özel Skin / Gamepass Yoluyla Yatırım</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;" id="code-group">
+          <label style="font-size: 12px; color: var(--text-muted);">VP E-Pin Kodu veya İşlem Detayı *</label>
+          <input type="text" id="deposit-code" class="form-control" placeholder="Örn: VPRX-8492-TR99" style="margin-top: 6px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Yüklenecek Tutar (VP) *</label>
+          <input type="number" id="deposit-amount" min="100" max="50000" value="1000" class="form-control" placeholder="Min 100 VP" required style="margin-top: 6px;">
+        </div>
+
+        <button onclick="submitDepositRequest()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 15px; cursor: pointer;">
+          🚀 Yükleme Talebi Gönder
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÖZEL BİLDİRİM MODALI -->
+  <div id="custom-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <div id="modal-icon" style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+      <h3 id="modal-title" style="font-size: 20px; color: #fff; margin-bottom: 10px;">Talep Alındı!</h3>
+      <p id="modal-desc" style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;"></p>
+      <button onclick="closeModal()" class="btn btn-primary" style="width: 100%; padding: 12px; cursor: pointer;">Tamam</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let currentUser = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      currentUser = localStorage.getItem('vanguardUser');
+      const authContainer = document.getElementById('auth-buttons');
+      const bakiyeText = document.getElementById('live-bakiye');
+
+      if (!currentUser) {
+        if (bakiyeText) bakiyeText.textContent = '0 VP';
+        authContainer.innerHTML = `
+          <a href="giris.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; text-decoration: none; margin-right: 8px;">Giriş Yap</a>
+          <a href="kayit.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none;">Kayıt Ol</a>
+        `;
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + currentUser);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          const currentBalance = Number(userData.bakiye) || 0;
+          
+          if (bakiyeText) bakiyeText.textContent = currentBalance + ' VP';
+          document.getElementById('deposit-username').value = currentUser;
+
+          authContainer.innerHTML = `
+            <span style="color: #fff; font-weight: 700; font-size: 13px; margin-right: 10px;">👤 ${currentUser}</span>
+            <button onclick="localStorage.removeItem('vanguardUser'); window.location.reload();" class="btn btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #ff4b4b; color: #ff4b4b; cursor:pointer;">Çıkış</button>
+          `;
+        }
+      });
+    });
+
+    window.submitDepositRequest = function() {
+      if (!currentUser) {
+        showModal("Giriş Gerekli", "Yatırım talebi oluşturmak için önce giriş yapmalısın kanka!", "⚠️");
+        setTimeout(() => { window.location.href = "giris.html"; }, 2000);
+        return;
+      }
+
+      const riotId = document.getElementById('deposit-username').value.trim();
+      const method = document.getElementById('deposit-method').value;
+      const code = document.getElementById('deposit-code').value.trim();
+      const miktar = Number(document.getElementById('deposit-amount').value);
+
+      if (!riotId || !miktar) {
+        showModal("Eksik Bilgi", "Lütfen gerekli alanları doldur kanka!", "⚠️");
+        return;
+      }
+
+      if (miktar < 100) {
+        showModal("Geçersiz Tutar", "Minimum yükleme tutarı 100 VP olmalıdır!", "⚠️");
+        return;
+      }
+
+      const requestsRef = ref(db, 'requests');
+      const yeniTalepRef = push(requestsRef);
+
+      set(yeniTalepRef, {
+        username: currentUser,
+        tur: 'Yatırım',
+        detay: `${riotId} - ${method} (${code || 'Belirtilmedi'})`,
+        tutar: miktar,
+        durum: 'Bekliyor',
+        tarih: new Date().toISOString()
+      }).then(() => {
+        showModal("Yatırım Talebi Alındı!", `${miktar} VP tutarındaki yatırım talebin admin paneline iletildi. Kontrol edildikten sonra hesabına yansıtılacaktır!`, "🚀");
+      }).catch((error) => {
+        console.error("Yatırım hatası:", error);
+        showModal("Hata", "Talep oluşturulurken bir hata oluştu.", "❌");
+      });
+    };
+
+    window.showModal = function(title, desc, icon) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('modal-icon').textContent = icon;
+      document.getElementById('custom-modal').style.display = 'flex';
+    };
+
+    window.closeModal = function() {
+      document.getElementById('custom-modal').style.display = 'none';
+      window.location.reload();
+    };
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

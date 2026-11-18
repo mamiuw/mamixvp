@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAMİXVP — Valorant Skin, VP Yatırım, Çekim ve E-Spor Platformu</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .hero-grid { display: grid; grid-template-columns: 1fr; text-align: center; max-width: 800px; margin: 0 auto 40px auto; }
+    .ticker-bar { background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 18px; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+    .games-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+    .game-card-item { background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 18px; padding: 22px; transition: 0.2s; text-align: left; }
+    .game-card-item:hover { border-color: var(--valorant-red); transform: translateY(-3px); }
+  </style>
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="max-width: 1200px; padding: 20px 15px;">
+    
+    <!-- ÜST MENÜ / NAVBAR -->
+    <div class="nav-shell" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; flex-wrap: wrap; gap: 15px;">
+      <div style="display: flex; align-items: center; gap: 25px;">
+        <h2 class="brand-mark" style="font-size: 24px; font-weight: 800; color: #fff; margin: 0;">MAMİXVP<span style="color: var(--valorant-red);"></span></h2>
+        <div style="display: flex; gap: 18px; align-items: center;">
+          <a href="index.html" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;">Ana Sayfa</a>
+          <a href="oyunlar.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Oyunlar</a>
+          <a href="yatir.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Yükle</a>
+          <a href="cek.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Çek / Market</a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted);">Bakiye:</span>
+          <span id="live-bakiye" style="font-weight: 800; color: var(--valorant-red); font-size: 16px;">0 VP</span>
+        </div>
+        <div id="auth-buttons"></div>
+      </div>
+    </div>
+
+    <!-- CANLI İŞLEM AKIŞI (TICKER) -->
+    <div class="ticker-bar">
+      <span class="official-badge" style="font-size: 10px;">CANLI AKIŞ</span>
+      <div id="live-ticker-text" style="font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+        🚀 Canlı Valorant sistemi aktif! VP yüklemeleri ve skin çekimleri anında işleniyor.
+      </div>
+    </div>
+
+    <!-- ANA HERO ALANI -->
+    <div class="hero-grid">
+      <div>
+        <span class="official-badge" style="margin-bottom: 12px; display: inline-block;">TÜRKİYE'NİN EN HIZLI VP & SKIN PLATFORMU</span>
+        <h1 style="font-size: 40px; font-weight: 800; margin-bottom: 15px; color: #fff; line-height: 1.2;">Valorant VP'ni Katla, Nadir Skinleri Kap!</h1>
+        <p style="color: var(--text-muted); font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+          MAMİXVP; hızlı VP yatırımları, anında kod çekimleri, Night Market skin hediyeleri ve heyecan dolu mini oyunlarla kesintisiz eğlence sunar. Kayıt olan herkese <span style="color: var(--valorant-red); font-weight: 700;">+100 VP Bonus</span> hediye!
+        </p>
+
+        <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 30px;">
+          <a href="yatir.html" class="btn btn-primary" style="padding: 14px 26px; font-size: 15px; text-decoration: none;">➕ VP Yükle / Yatır</a>
+          <a href="cek.html" class="btn btn-outline" style="padding: 14px 26px; font-size: 15px; text-decoration: none;">💸 VP Çek / Market</a>
+        </div>
+
+        <!-- İSTATİSTİK KARTLARI -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+          <div class="stat-card" style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 14px; border-radius: 14px;">
+            <div style="font-size: 11px; color: var(--text-muted);">Aktif Oyuncu</div>
+            <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">4,850+</div>
+          </div>
+          <div class="stat-card" style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 14px; border-radius: 14px;">
+            <div style="font-size: 11px; color: var(--text-muted);">Dağıtılan VP</div>
+            <div style="font-size: 20px; font-weight: 800; color: var(--valorant-red); margin-top: 4px;">1.4M+ VP</div>
+          </div>
+          <div class="stat-card" style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 14px; border-radius: 14px;">
+            <div style="font-size: 11px; color: var(--text-muted);">Güvenilirlik</div>
+            <div style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px;">%100</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OYUNLAR & MODLAR LOBİSİ -->
+    <h3 style="font-size: 20px; font-weight: 800; color: #fff; margin-top: 40px; margin-bottom: 15px;">🎮 Valorant Modları ve Kasalar</h3>
+    <div class="games-grid">
+      <div class="game-card-item">
+        <div class="game-visual"><span class="tag">MAMİXVP // SPIKE PROTOCOL</span><div class="visual-grid"></div><img src="assets/spike-3d.svg" alt="Spike 3D"></div>
+        <h4 style="font-size: 16px; color: #fff; margin-bottom: 6px;">Spike Crash (Çarpan)</h4>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Spike patlamadan önce bozdur, VP kazancını katla!</p>
+        <a href="oyun-crash.html" class="btn btn-primary" style="display: block; text-align: center; text-decoration: none; font-size: 13px; padding: 10px;">Oyuna Git 🚀</a>
+      </div>
+
+      <div class="game-card-item">
+        <div class="game-visual"><span class="tag">MAMİXVP // SKIN ARMORY</span><div class="visual-grid"></div><img src="assets/crate-3d.svg" alt="Skin kasa 3D"></div>
+        <h4 style="font-size: 16px; color: #fff; margin-bottom: 6px;">Valorant Skin Kasası</h4>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Özel silah kasalarını aç, efsanevi Vandal ve Knife kap.</p>
+        <a href="oyun-kasa.html" class="btn btn-primary" style="display: block; text-align: center; text-decoration: none; font-size: 13px; padding: 10px;">Oyuna Git 🚀</a>
+      </div>
+
+      <div class="game-card-item">
+        <div class="game-visual"><span class="tag">MAMİXVP // RANK DUEL</span><div class="visual-grid"></div><img src="assets/duel-3d.svg" alt="Düello 3D"></div>
+        <h4 style="font-size: 16px; color: #fff; margin-bottom: 6px;">Rank Coinflip (Düello)</h4>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 15px;">Radiant ve Immortal kapışması, şansını bire bir dene.</p>
+        <a href="oyun-coinflip.html" class="btn btn-primary" style="display: block; text-align: center; text-decoration: none; font-size: 13px; padding: 10px;">Oyuna Git 🚀</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentUser = localStorage.getItem('vanguardUser');
+      const authContainer = document.getElementById('auth-buttons');
+      const bakiyeText = document.getElementById('live-bakiye');
+
+      if (!currentUser) {
+        bakiyeText.textContent = '0 VP';
+        authContainer.innerHTML = `
+          <a href="giris.html" class="btn btn-outline" style="padding: 8px 16px; font-size: 13px; text-decoration: none; margin-right: 8px;">Giriş Yap</a>
+          <a href="kayit.html" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px; text-decoration: none;">Kayıt Ol</a>
+        `;
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + currentUser);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          const guncelBakiye = userData.bakiye || 0;
+          
+          bakiyeText.textContent = guncelBakiye + ' VP';
+          localStorage.setItem('vanguardBakiye', guncelBakiye);
+
+          authContainer.innerHTML = `
+            <span style="color: #fff; font-weight: 700; font-size: 13px; margin-right: 10px;">👤 ${currentUser}</span>
+            <button onclick="cikisYap()" class="btn btn-outline" style="padding: 6px 12px; font-size: 11px; border-color: #ff4b4b; color: #ff4b4b;">Çıkış</button>
+          `;
+        }
+      });
+
+      loadLiveTicker();
+    });
+
+    window.cikisYap = function() {
+      localStorage.removeItem('vanguardUser');
+      localStorage.removeItem('vanguardBakiye');
+      alert("Çıkış yapıldı.");
+      window.location.reload();
+    };
+
+    function loadLiveTicker() {
+      const ticker = document.getElementById('live-ticker-text');
+      const messages = [
+        "🔥 Son İşlem: Bir oyuncu 1,450 VP yükleme yaptı!",
+        "⚡ Son İşlem: Kurucu Vandal hediyesi başarıyla gönderildi.",
+        "🎉 Son İşlem: Spike Crash oyununda 12.50x çarpan yakalandı!",
+        "💎 MAMİXVP güvenli altyapısıyla 7/24 kesintisiz VP hizmeti veriyor."
+      ];
+      let i = 0;
+      setInterval(() => {
+        i = (i + 1) % messages.length;
+        ticker.textContent = messages[i];
+      }, 4000);
+    }
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

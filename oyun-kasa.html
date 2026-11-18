@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valorant Skin Kasası — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="max-width: 1200px; padding: 20px 15px;">\n    <div class="game-visual" style="height:220px;margin:0 0 24px;border-radius:3px;"><span class="tag">SKIN ARMORY // 3D</span><div class="visual-grid"></div><img src="assets/crate-3d.svg" alt="SKIN ARMORY // 3D"></div>
+    
+    <!-- ÜST MENÜ / NAVBAR -->
+    <div class="nav-shell" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;">
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <h2 class="brand-mark" style="font-size: 24px; font-weight: 800; color: #fff; margin: 0;">MAMİXVP<span style="color: var(--valorant-red);"></span></h2>
+        <div style="display: flex; gap: 15px;">
+          <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Ana Sayfa</a>
+          <a href="oyunlar.html" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;">Oyunlar</a>
+          <a href="yatir.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Yükle</a>
+          <a href="cek.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Çek / Market</a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted);">Bakiye:</span>
+          <span id="live-bakiye" style="font-weight: 800; color: var(--valorant-red); font-size: 16px;">0 VP</span>
+        </div>
+        <div id="auth-buttons"></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 18px;">
+      <a href="oyunlar.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Oyunlara Dön</a>
+    </div>
+
+    <div class="game-layout" style="display: grid; grid-template-columns: 380px 1fr; gap: 24px; align-items: start;">
+      <div class="control-panel" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
+        <h2 style="font-size: 20px; margin-bottom: 14px; color: #fff;">📦 Valorant Silah Kasası</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+          Her kasa açılımı <strong>300 VP</strong> değerindedir. İçinden çıkan silah veya bıçak skininin VP değeri anında bakiyene eklenir.
+        </p>
+
+        <button id="open-case-btn" onclick="openCase()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 15px; cursor: pointer;">
+          📦 Kasayı Aç (300 VP)
+        </button>
+
+        <div style="margin-top: 22px;">
+          <div style="font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px;">KASA İÇERİĞİ & ÖDÜLLER</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+            <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:8px;">
+              <span>🔫 Classic / Ghost Skin</span><strong style="color:var(--text-muted);">120 VP</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:8px;">
+              <span>🎯 Phantom / Vandal Skin</span><strong style="color:#fff;">350 VP</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:8px;">
+              <span>⚔️ Asil Karambit / Bıçak</span><strong style="color:var(--valorant-red);">800 VP</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:8px; border:1px solid rgba(255,70,85,0.3);">
+              <span>👑 Yağmacı Vandal (Efsanevi)</span><strong style="color:var(--valorant-red);">3,000 VP</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arena-panel" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 50px 20px; text-align: center;">
+        <div id="case-box-icon" style="font-size: 84px; transition: transform 0.3s;">📦</div>
+        <h3 id="case-result-title" style="font-size: 24px; margin-top: 18px; color: #fff;">Kasayı Açmaya Hazır</h3>
+        <p id="case-result-sub" style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Şansını dene ve efsanevi Vandal skinini yakala!</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let opening = false;
+    let currentBalance = 0;
+    let currentUser = null;
+
+    const rewards = [
+      { icon: '🔫', name: 'Prime / Glitchpop Classic', val: 120, weight: 48 },
+      { icon: '🎯', name: 'Asil Phantom', val: 350, weight: 32 },
+      { icon: '⚔️', name: 'Kuru Kafa Bıçak / Karambit', val: 800, weight: 15 },
+      { icon: '👑', name: 'Yağmacı Vandal (Efsanevi)', val: 3000, weight: 5 }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      currentUser = localStorage.getItem('vanguardUser');
+      const authContainer = document.getElementById('auth-buttons');
+      const bakiyeText = document.getElementById('live-bakiye');
+
+      if (!currentUser) {
+        bakiyeText.textContent = '0 VP';
+        authContainer.innerHTML = `
+          <a href="giris.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; text-decoration: none; margin-right: 8px;">Giriş Yap</a>
+          <a href="kayit.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none;">Kayıt Ol</a>
+        `;
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + currentUser);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          currentBalance = Number(userData.bakiye) || 0;
+          bakiyeText.textContent = currentBalance + ' VP';
+          localStorage.setItem('vanguardBakiye', currentBalance);
+
+          authContainer.innerHTML = `
+            <span style="color: #fff; font-weight: 700; font-size: 13px; margin-right: 10px;">👤 ${currentUser}</span>
+            <button onclick="localStorage.removeItem('vanguardUser'); window.location.reload();" class="btn btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #ff4b4b; color: #ff4b4b; cursor:pointer;">Çıkış</button>
+          `;
+        }
+      });
+    });
+
+    function pickReward() {
+      const total = rewards.reduce((s, r) => s + r.weight, 0);
+      let rand = Math.random() * total;
+      for (const r of rewards) {
+        if (rand < r.weight) return r;
+        rand -= r.weight;
+      }
+      return rewards[0];
+    }
+
+    window.openCase = function() {
+      if (opening) return;
+      if (!currentUser) {
+        alert("Kasa açmak için giriş yapmalısın kanka!");
+        window.location.href = 'giris.html';
+        return;
+      }
+      if (currentBalance < 300) {
+        alert(`Yetersiz bakiye! Mevcut bakiyen: ${currentBalance} VP (En az 300 VP gerekli).`);
+        return;
+      }
+
+      currentBalance -= 300;
+      updateBakiyeInFirebase(currentBalance);
+
+      opening = true;
+
+      const iconEl = document.getElementById('case-box-icon');
+      const titleEl = document.getElementById('case-result-title');
+      const subEl = document.getElementById('case-result-sub');
+
+      titleEl.textContent = 'Kasa Açılıyor...';
+      subEl.textContent = 'Silah skini belirleniyor...';
+
+      let ticks = 0;
+      const anim = setInterval(() => {
+        ticks++;
+        const temp = rewards[ticks % rewards.length];
+        iconEl.textContent = temp.icon;
+        iconEl.style.transform = ticks % 2 === 0 ? 'scale(1.15) rotate(6deg)' : 'scale(1.15) rotate(-6deg)';
+
+        if (ticks >= 14) {
+          clearInterval(anim);
+          iconEl.style.transform = 'scale(1)';
+          const won = pickReward();
+          iconEl.textContent = won.icon;
+          titleEl.textContent = won.name;
+          subEl.innerHTML = `Kasa ödülü olarak <strong style="color:var(--valorant-red);">+${won.val} VP</strong> bakiyene eklendi!`;
+          
+          currentBalance += won.val;
+          updateBakiyeInFirebase(currentBalance);
+
+          opening = false;
+        }
+      }, 100);
+    };
+
+    function updateBakiyeInFirebase(yeniBakiye) {
+      const userRef = ref(db, 'users/' + currentUser);
+      update(userRef, { bakiye: yeniBakiye }).then(() => {
+        document.getElementById('live-bakiye').textContent = yeniBakiye + ' VP';
+        localStorage.setItem('vanguardBakiye', yeniBakiye);
+      });
+    }
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

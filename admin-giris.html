@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Giriş — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+    <div style="width: 100%; max-width: 400px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; text-align: center;">
+      <span class="official-badge" style="margin-bottom: 10px; display: inline-block;">YÖNETİCİ ÖZEL</span>
+      <h2 style="margin-bottom: 15px; color: #fff;">🔐 Admin Girişi</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Yönetim paneline erişmek için admin şifreni gir.</p>
+      
+      <input type="password" id="admin-pass-input" class="form-control" placeholder="Admin Şifresi" style="margin-bottom: 15px; width: 100%; box-sizing: border-box; padding: 12px;">
+      <button onclick="checkAdminLogin()" class="btn btn-primary" style="width: 100%; padding: 12px;">Giriş Yap</button>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORDS = ["mami123", "marlon123"];
+
+    function checkAdminLogin() {
+      const p = document.getElementById('admin-pass-input').value;
+      
+      if (ADMIN_PASSWORDS.includes(p)) {
+        localStorage.setItem('vanguardAdminAuth', 'true');
+        alert("Giriş başarılı! Yönetim paneline yönlendiriliyorsun... 🚀");
+        window.location.href = 'admin.html';
+      } else {
+        alert("Şifre yanlış kanka!");
+      }
+    }
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

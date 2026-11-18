@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valorant Düello / Coinflip — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="max-width: 1200px; padding: 20px 15px;">\n    <div class="game-visual" style="height:220px;margin:0 0 24px;border-radius:3px;"><span class="tag">RANK DUEL // 1V1</span><div class="visual-grid"></div><img src="assets/duel-3d.svg" alt="RANK DUEL // 1V1"></div>
+    
+    <!-- ÜST MENÜ / NAVBAR -->
+    <div class="nav-shell" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;">
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <h2 class="brand-mark" style="font-size: 24px; font-weight: 800; color: #fff; margin: 0;">MAMİXVP<span style="color: var(--valorant-red);"></span></h2>
+        <div style="display: flex; gap: 15px;">
+          <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Ana Sayfa</a>
+          <a href="oyunlar.html" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;">Oyunlar</a>
+          <a href="yatir.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Yükle</a>
+          <a href="cek.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Çek / Market</a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted);">Bakiye:</span>
+          <span id="live-bakiye" style="font-weight: 800; color: var(--valorant-red); font-size: 16px;">0 VP</span>
+        </div>
+        <div id="auth-buttons"></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 18px;">
+      <a href="oyunlar.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Oyunlara Dön</a>
+    </div>
+
+    <div class="game-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 24px; align-items: center;">
+      <div class="control-panel" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
+        <h2 style="font-size: 20px; margin-bottom: 18px; color: #fff;">🪙 Valorant Düello (Coinflip)</h2>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Yatırılacak VP (VP)</label>
+          <input type="number" id="cf-bet" class="form-control" value="100" min="100" style="margin-top: 6px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Tarafını Seç (1.85x Kazanç)</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px;">
+            <button type="button" id="side-red" onclick="selectSide('red')" class="btn btn-primary" style="cursor: pointer; background: var(--valorant-red);">🟥 Red Side</button>
+            <button type="button" id="side-blue" onclick="selectSide('blue')" class="btn btn-outline" style="cursor: pointer;">🟦 Blue Side</button>
+          </div>
+        </div>
+
+        <button onclick="flipCoin()" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px; cursor: pointer;">
+          ⚔️ Düelloyu Başlat
+        </button>
+      </div>
+
+      <div class="arena-panel" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; text-align: center;">
+        <div id="coin-visual" style="width: 130px; height: 130px; margin: 0 auto; border-radius: 50%; background: linear-gradient(135deg, var(--valorant-red), #b71c2a); display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 800; color: #fff; box-shadow: 0 0 35px rgba(255,70,85,0.3); transition: transform 0.6s;">
+          VP
+        </div>
+        <h3 id="cf-status" style="font-size: 22px; margin-top: 24px; color: #fff;">Tarafını Seç ve Düelloya Başla</h3>
+        <p id="cf-sub" style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">Doğru bilirsen yatırdığın VP 1.85x katlanır!</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let chosenSide = 'red';
+    let flipping = false;
+    let currentBalance = 0;
+    let currentUser = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      currentUser = localStorage.getItem('vanguardUser');
+      const authContainer = document.getElementById('auth-buttons');
+      const bakiyeText = document.getElementById('live-bakiye');
+
+      if (!currentUser) {
+        bakiyeText.textContent = '0 VP';
+        authContainer.innerHTML = `
+          <a href="giris.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; text-decoration: none; margin-right: 8px;">Giriş Yap</a>
+          <a href="kayit.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none;">Kayıt Ol</a>
+        `;
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + currentUser);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          currentBalance = Number(userData.bakiye) || 0;
+          bakiyeText.textContent = currentBalance + ' VP';
+          localStorage.setItem('vanguardBakiye', currentBalance);
+
+          authContainer.innerHTML = `
+            <span style="color: #fff; font-weight: 700; font-size: 13px; margin-right: 10px;">👤 ${currentUser}</span>
+            <button onclick="localStorage.removeItem('vanguardUser'); window.location.reload();" class="btn btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #ff4b4b; color: #ff4b4b; cursor:pointer;">Çıkış</button>
+          `;
+        }
+      });
+    });
+
+    window.selectSide = function(side) {
+      chosenSide = side;
+      document.getElementById('side-red').style.background = side === 'red' ? 'var(--valorant-red)' : 'transparent';
+      document.getElementById('side-blue').style.background = side === 'blue' ? '#0070f3' : 'transparent';
+    };
+
+    window.flipCoin = function() {
+      if (flipping) return;
+      if (!currentUser) {
+        alert("Oynamak için giriş yapmalısın kanka!");
+        window.location.href = 'giris.html';
+        return;
+      }
+
+      const bet = Number(document.getElementById('cf-bet').value);
+      if (isNaN(bet) || bet < 100) {
+        alert("Minimum bahis tutarı 100 VP olmalıdır!");
+        return;
+      }
+      if (currentBalance < bet) {
+        alert(`Yetersiz bakiye! Mevcut bakiyen: ${currentBalance} VP`);
+        return;
+      }
+
+      currentBalance -= bet;
+      updateBakiyeInFirebase(currentBalance);
+
+      flipping = true;
+      const coin = document.getElementById('coin-visual');
+      coin.style.transform = 'rotateY(720deg) scale(1.1)';
+      document.getElementById('cf-status').textContent = 'Düello Devam Ediyor...';
+
+      setTimeout(() => {
+        coin.style.transform = 'rotateY(0deg) scale(1)';
+        
+        const rand = Math.random();
+        const result = rand < 0.46 ? chosenSide : (chosenSide === 'red' ? 'blue' : 'red');
+
+        if (result === 'red') {
+          coin.style.background = 'linear-gradient(135deg, var(--valorant-red), #b71c2a)';
+          coin.textContent = 'RED';
+        } else {
+          coin.style.background = 'linear-gradient(135deg, #0070f3, #0040af)';
+          coin.textContent = 'BLU';
+        }
+
+        if (result === chosenSide) {
+          const win = Math.floor(bet * 1.85);
+          currentBalance += win;
+          updateBakiyeInFirebase(currentBalance);
+
+          document.getElementById('cf-status').innerHTML = `<span style="color:var(--valorant-red);">Kazandın! +${win} VP</span>`;
+        } else {
+          document.getElementById('cf-status').innerHTML = `<span style="color:#ff4b4b;">Kaybettin! (${result === 'red' ? 'Red Side' : 'Blue Side'} kazandı)</span>`;
+        }
+        flipping = false;
+      }, 650);
+    };
+
+    function updateBakiyeInFirebase(yeniBakiye) {
+      const userRef = ref(db, 'users/' + currentUser);
+      update(userRef, { bakiye: yeniBakiye }).then(() => {
+        document.getElementById('live-bakiye').textContent = yeniBakiye + ' VP';
+        localStorage.setItem('vanguardBakiye', yeniBakiye);
+      });
+    }
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

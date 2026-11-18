@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VP Çek / Eşya Al — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="max-width: 1200px; padding: 20px 15px;">
+    
+    <!-- ÜST MENÜ / NAVBAR -->
+    <div class="nav-shell" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;">
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <h2 class="brand-mark" style="font-size: 24px; font-weight: 800; color: #fff; margin: 0;">MAMİXVP<span style="color: var(--valorant-red);"></span></h2>
+        <div style="display: flex; gap: 15px;">
+          <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Ana Sayfa</a>
+          <a href="oyunlar.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Oyunlar</a>
+          <a href="yatir.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Yükle</a>
+          <a href="cek.html" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;">VP Çek / Market</a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted);">Bakiye:</span>
+          <span id="live-bakiye" style="font-weight: 800; color: var(--valorant-red); font-size: 16px;">0 VP</span>
+        </div>
+        <div id="auth-buttons"></div>
+      </div>
+    </div>
+
+    <div style="max-width: 780px; margin: 0 auto;">
+      <div style="margin-bottom: 24px;">
+        <span class="official-badge" style="margin-bottom: 8px; display: inline-block;">GÜVENLİ ÇEKİM & HEDİYE SİSTEMİ</span>
+        <h1 style="font-size: 30px; font-weight: 800; color: #fff;">💸 VP Çek veya Skin Talep Et (Min 500 VP)</h1>
+        <p style="color: var(--text-muted); margin-top: 6px; font-size: 14px;">Bakiyeni doğrudan Riot ID'ne VP kodu olarak çek veya Night Market skin hediyesi talep et.</p>
+      </div>
+
+      <div style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 20px; padding: 28px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); padding: 18px 22px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 24px;">
+          <div>
+            <div style="font-size: 13px; color: var(--text-muted);">Mevcut VP Bakiyen</div>
+            <div id="user-bakiye-text" style="font-size: 24px; font-weight: 800; color: var(--valorant-red); margin-top: 2px;">0 VP</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 13px; color: var(--text-muted);">İşlem Ücreti</div>
+            <div style="font-size: 15px; font-weight: 700; color: #fff;">%0 (Ücretsiz)</div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Riot ID ve Etiket (Örn: JettMain#TR1) *</label>
+          <input type="text" id="withdraw-username" class="form-control" placeholder="Örn: JettMain#1907" required style="margin-top: 6px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 18px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Talep Türü *</label>
+          <select id="withdraw-type" class="form-control" style="margin-top: 6px; background: var(--bg-panel); color: #fff;">
+            <option value="VP Kodu">Doğrudan VP Kodu Çekimi</option>
+            <option value="Skin Hediye">Night Market / Mağaza Skin Hediyesi</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Çekilecek / Harcanacak Miktar (VP) *</label>
+          <input type="number" id="withdraw-amount" min="500" max="50000" value="500" class="form-control" placeholder="Min 500 VP" required style="margin-top: 6px;">
+          <small style="color: var(--text-muted); font-size: 11px; display: block; margin-top: 6px;">Minimum çekim tutarı 500 VP'dir.</small>
+        </div>
+
+        <button onclick="submitWithdrawRequest()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 15px; cursor: pointer;">
+          🚀 Çekim / Hediye Talebi Oluştur
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÖZEL BİLDİRİM MODALI -->
+  <div id="custom-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; justify-content: center; align-items: center;">
+    <div style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <div id="modal-icon" style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+      <h3 id="modal-title" style="font-size: 20px; color: #fff; margin-bottom: 10px;">Talep Alındı!</h3>
+      <p id="modal-desc" style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;"></p>
+      <button onclick="closeModal()" class="btn btn-primary" style="width: 100%; padding: 12px; cursor: pointer;">Tamam</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, push, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let currentBalance = 0;
+    let currentUser = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      currentUser = localStorage.getItem('vanguardUser');
+      const authContainer = document.getElementById('auth-buttons');
+      const bakiyeText = document.getElementById('live-bakiye');
+      const userBakiyeText = document.getElementById('user-bakiye-text');
+
+      if (!currentUser) {
+        if (bakiyeText) bakiyeText.textContent = '0 VP';
+        if (userBakiyeText) userBakiyeText.textContent = '0 VP';
+        authContainer.innerHTML = `
+          <a href="giris.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; text-decoration: none; margin-right: 8px;">Giriş Yap</a>
+          <a href="kayit.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none;">Kayıt Ol</a>
+        `;
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + currentUser);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          currentBalance = Number(userData.bakiye) || 0;
+          
+          if (bakiyeText) bakiyeText.textContent = currentBalance + ' VP';
+          if (userBakiyeText) userBakiyeText.textContent = currentBalance + ' VP';
+          
+          document.getElementById('withdraw-username').value = currentUser;
+
+          authContainer.innerHTML = `
+            <span style="color: #fff; font-weight: 700; font-size: 13px; margin-right: 10px;">👤 ${currentUser}</span>
+            <button onclick="localStorage.removeItem('vanguardUser'); window.location.reload();" class="btn btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #ff4b4b; color: #ff4b4b; cursor:pointer;">Çıkış</button>
+          `;
+        }
+      });
+    });
+
+    window.submitWithdrawRequest = function() {
+      if (!currentUser) {
+        showModal("Giriş Gerekli", "Talep oluşturmak için önce giriş yapmalısın kanka!", "⚠️");
+        setTimeout(() => { window.location.href = "giris.html"; }, 2000);
+        return;
+      }
+
+      const riotId = document.getElementById('withdraw-username').value.trim();
+      const miktar = Number(document.getElementById('withdraw-amount').value);
+      const turSecim = document.getElementById('withdraw-type').value;
+
+      if (!riotId || !miktar) {
+        showModal("Eksik Bilgi", "Lütfen tüm alanları eksiksiz doldur kanka!", "⚠️");
+        return;
+      }
+
+      if (miktar < 500) {
+        showModal("Geçersiz Tutar", "Minimum işlem tutarı 500 VP olmalıdır!", "⚠️");
+        return;
+      }
+
+      if (currentBalance < miktar) {
+        showModal("Yetersiz Bakiye", `Bakiyen bu işlem için yetersiz! Mevcut bakiyen: ${currentBalance} VP`, "❌");
+        return;
+      }
+
+      const requestsRef = ref(db, 'requests');
+      const yeniTalepRef = push(requestsRef);
+
+      set(yeniTalepRef, {
+        username: currentUser,
+        tur: 'Çekim',
+        detay: `${riotId} için ${miktar} VP (${turSecim})`,
+        tutar: miktar,
+        durum: 'Bekliyor',
+        tarih: new Date().toISOString()
+      }).then(() => {
+        showModal("Talep Alındı!", `${miktar} VP tutarındaki talebin admin paneline iletildi. Kontrol edildikten sonra Riot hesabına aktarılacaktır!`, "💸");
+      }).catch((error) => {
+        console.error("Çekim hatası:", error);
+        showModal("Hata", "Talep oluşturulurken bir hata oluştu.", "❌");
+      });
+    };
+
+    window.showModal = function(title, desc, icon) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-desc').textContent = desc;
+      document.getElementById('modal-icon').textContent = icon;
+      document.getElementById('custom-modal').style.display = 'flex';
+    };
+
+    window.closeModal = function() {
+      document.getElementById('custom-modal').style.display = 'none';
+      window.location.reload();
+    };
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

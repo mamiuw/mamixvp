@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spike Crash — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="max-width: 1200px; padding: 20px 15px;">\n    <div class="game-visual" style="height:220px;margin:0 0 24px;border-radius:3px;"><span class="tag">SPIKE CRASH // LIVE</span><div class="visual-grid"></div><img src="assets/spike-3d.svg" alt="SPIKE CRASH // LIVE"></div>
+    
+    <!-- ÜST MENÜ / NAVBAR -->
+    <div class="nav-shell" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px;">
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <h2 class="brand-mark" style="font-size: 24px; font-weight: 800; color: #fff; margin: 0;">MAMİXVP<span style="color: var(--valorant-red);"></span></h2>
+        <div style="display: flex; gap: 15px;">
+          <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">Ana Sayfa</a>
+          <a href="oyunlar.html" style="color: #fff; text-decoration: none; font-weight: 700; font-size: 14px;">Oyunlar</a>
+          <a href="yatir.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Yükle</a>
+          <a href="cek.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 14px;">VP Çek / Market</a>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="background: var(--bg-panel); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 12px; color: var(--text-muted);">Bakiye:</span>
+          <span id="live-bakiye" style="font-weight: 800; color: var(--valorant-red); font-size: 16px;">0 VP</span>
+        </div>
+        <div id="auth-buttons"></div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 18px;">
+      <a href="oyunlar.html" style="color: var(--text-muted); text-decoration: none; font-size: 14px; font-weight: 600;">← Oyunlara Dön</a>
+    </div>
+
+    <div class="game-layout" style="display: grid; grid-template-columns: 350px 1fr; gap: 24px; align-items: start;">
+      <div class="control-panel" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px;">
+        <h2 style="font-size: 20px; margin-bottom: 18px; color: #fff;">💣 Spike Crash</h2>
+
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label style="font-size: 12px; color: var(--text-muted);">Yatırılacak VP (VP)</label>
+          <input type="number" id="bet-amount" class="form-control" value="100" min="100" style="margin-top: 6px;">
+          <div class="quick-bets" style="display: flex; gap: 6px; margin-top: 8px;">
+            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 11px; cursor: pointer;" onclick="setBet(500)">500 VP</button>
+            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 11px; cursor: pointer;" onclick="setBet(1000)">1000 VP</button>
+            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 11px; cursor: pointer;" onclick="setBet(2500)">2500 VP</button>
+            <button type="button" class="btn btn-outline" style="padding: 6px 10px; font-size: 11px; cursor: pointer;" onclick="doubleBet()">2x</button>
+          </div>
+        </div>
+
+        <button id="btn-start" onclick="startCrash()" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px; margin-top: 10px; cursor: pointer;">
+          🚀 Spike Kur ve Başlat
+        </button>
+
+        <button id="btn-cashout" onclick="cashoutCrash()" class="btn btn-primary" style="display: none; width: 100%; padding: 14px; font-size: 15px; margin-top: 10px; background: #ffa502; color: #000; cursor: pointer;">
+          💰 Bozdur (<span id="cashout-val">100</span> VP)
+        </button>
+
+        <div style="margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+          <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">SON ÇARPANLAR</div>
+          <div id="crash-history" style="display: flex; gap: 6px; flex-wrap: wrap;">
+            <span class="official-badge">3.15x</span>
+            <span class="official-badge" style="color: #ff4b4b; border-color: #ff4b4b;">1.02x</span>
+            <span class="official-badge">5.40x</span>
+            <span class="official-badge">2.10x</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arena-panel" style="background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; text-align: center;">
+        <div id="rocket-status" style="font-size: 14px; color: var(--text-muted); font-weight: 700;">SPIKE KURULUMA HAZIR</div>
+        <div id="rocket-emoji" style="font-size: 56px; margin-top: 12px; transition: transform 0.2s;">💣</div>
+        <div id="multiplier-display" style="font-family: monospace; font-size: 48px; font-weight: 800; color: var(--valorant-red); margin: 15px 0;">1.00x</div>
+        <div id="crash-msg" style="font-size: 14px; color: var(--text-muted);">Çarpan yükselirken istediğin an bozdur!</div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let isRunning = false;
+    let hasCasheout = false;
+    let currentMult = 1.00;
+    let crashPoint = 1.00;
+    let currentBet = 0;
+    let timer = null;
+    let currentBalance = 0;
+    let currentUser = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      currentUser = localStorage.getItem('vanguardUser');
+      const authContainer = document.getElementById('auth-buttons');
+      const bakiyeText = document.getElementById('live-bakiye');
+
+      if (!currentUser) {
+        bakiyeText.textContent = '0 VP';
+        authContainer.innerHTML = `
+          <a href="giris.html" class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; text-decoration: none; margin-right: 8px;">Giriş Yap</a>
+          <a href="kayit.html" class="btn btn-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none;">Kayıt Ol</a>
+        `;
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + currentUser);
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          currentBalance = Number(userData.bakiye) || 0;
+          bakiyeText.textContent = currentBalance + ' VP';
+          localStorage.setItem('vanguardBakiye', currentBalance);
+
+          authContainer.innerHTML = `
+            <span style="color: #fff; font-weight: 700; font-size: 13px; margin-right: 10px;">👤 ${currentUser}</span>
+            <button onclick="localStorage.removeItem('vanguardUser'); window.location.reload();" class="btn btn-outline" style="padding: 5px 10px; font-size: 11px; border-color: #ff4b4b; color: #ff4b4b; cursor:pointer;">Çıkış</button>
+          `;
+        }
+      });
+    });
+
+    window.setBet = function(val) {
+      if (isRunning) return;
+      document.getElementById('bet-amount').value = val;
+    };
+
+    window.doubleBet = function() {
+      if (isRunning) return;
+      const inp = document.getElementById('bet-amount');
+      inp.value = Math.max(100, Math.floor(Number(inp.value) * 2));
+    };
+
+    window.startCrash = function() {
+      if (isRunning) return;
+      if (!currentUser) {
+        alert("Oynamak için giriş yapmalısın kanka!");
+        window.location.href = 'giris.html';
+        return;
+      }
+
+      const bet = Number(document.getElementById('bet-amount').value);
+      if (isNaN(bet) || bet < 100) {
+        alert("Minimum bahis tutarı 100 VP olmalıdır!");
+        return;
+      }
+      if (currentBalance < bet) {
+        alert(`Yetersiz bakiye! Mevcut bakiyen: ${currentBalance} VP`);
+        return;
+      }
+
+      currentBalance -= bet;
+      updateBakiyeInFirebase(currentBalance);
+
+      currentBet = bet;
+      currentMult = 1.00;
+      isRunning = true;
+      hasCasheout = false;
+
+      const r = Math.random();
+      if (r < 0.15) crashPoint = 1.00;
+      else crashPoint = Math.min(80, +(1 / (1 - r * 0.90)).toFixed(2));
+
+      const disp = document.getElementById('multiplier-display');
+      disp.style.color = "var(--valorant-red)";
+      disp.textContent = '1.00x';
+
+      document.getElementById('rocket-status').textContent = 'SPIKE SAYACI TISLIYOR...';
+      document.getElementById('crash-msg').textContent = 'Patlamadan önce bozdur!';
+      document.getElementById('btn-start').style.display = 'none';
+      document.getElementById('btn-cashout').style.display = 'inline-block';
+      document.getElementById('cashout-val').textContent = bet;
+
+      timer = setInterval(() => {
+        if (!isRunning) return;
+        currentMult = +(currentMult + 0.025 + (currentMult * 0.012)).toFixed(2);
+        disp.textContent = currentMult.toFixed(2) + 'x';
+        document.getElementById('cashout-val').textContent = Math.floor(currentBet * currentMult);
+        document.getElementById('rocket-emoji').style.transform = `translateY(-${Math.min(35, currentMult * 4)}px) scale(1.1)`;
+
+        if (currentMult >= crashPoint) {
+          endCrash(false);
+        }
+      }, 90);
+    };
+
+    window.cashoutCrash = function() {
+      if (!isRunning || hasCasheout) return;
+      hasCasheout = true;
+      endCrash(true);
+    };
+
+    function endCrash(won) {
+      if (!isRunning) return;
+      clearInterval(timer);
+      isRunning = false;
+
+      document.getElementById('btn-start').style.display = 'inline-block';
+      document.getElementById('btn-cashout').style.display = 'none';
+      document.getElementById('rocket-emoji').style.transform = 'translateY(0)';
+
+      const hist = document.getElementById('crash-history');
+      const badge = document.createElement('span');
+      badge.className = 'official-badge';
+
+      if (won) {
+        const winAmount = Math.floor(currentBet * currentMult);
+        currentBalance += winAmount;
+        updateBakiyeInFirebase(currentBalance);
+
+        document.getElementById('rocket-status').textContent = 'BAŞARIYLA BOZDURULDU!';
+        document.getElementById('crash-msg').innerHTML = `<span style="color:var(--valorant-red); font-weight:800;">+${winAmount} VP kazandın!</span> (Spike ${crashPoint.toFixed(2)}x'te patladı)`;
+        badge.textContent = currentMult.toFixed(2) + 'x';
+      } else {
+        const disp = document.getElementById('multiplier-display');
+        disp.textContent = crashPoint.toFixed(2) + 'x';
+        disp.style.color = '#ff4b4b';
+        document.getElementById('rocket-status').textContent = '💥 SPIKE PATLADI!';
+        document.getElementById('crash-msg').textContent = `${currentBet} VP kaybedildi. Tekrar dene!`;
+        badge.textContent = crashPoint.toFixed(2) + 'x';
+        badge.style.color = '#ff4b4b';
+        badge.style.borderColor = '#ff4b4b';
+      }
+      hist.prepend(badge);
+      if (hist.children.length > 6) hist.lastChild.remove();
+    }
+
+    function updateBakiyeInFirebase(yeniBakiye) {
+      const userRef = ref(db, 'users/' + currentUser);
+      update(userRef, { bakiye: yeniBakiye }).then(() => {
+        document.getElementById('live-bakiye').textContent = yeniBakiye + ' VP';
+        localStorage.setItem('vanguardBakiye', yeniBakiye);
+      });
+    }
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>

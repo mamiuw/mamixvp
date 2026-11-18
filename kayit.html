@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kayıt Ol — MAMİXVP</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mamixvp-theme">
+  <div class="mamix-watermark">MAMİXVP</div>
+  <div class="container" style="display: flex; align-items: center; justify-content: center; min-height: 75vh;">
+    <div style="width: 100%; max-width: 480px; background: var(--bg-panel); border: 1px solid var(--border-color); border-radius: 22px; padding: 36px; z-index: 5; position: relative;">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <span class="official-badge" style="margin-bottom: 10px; display: inline-block;">YENİ ÜYELERE +100 VP HEDİYE</span>
+        <h1 style="font-size: 26px; font-weight: 800;">MAMİXVP Hesabı Oluştur</h1>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 6px;">VP yatırımları ve anında skin çekimleri için hesap aç.</p>
+      </div>
+
+      <form onsubmit="submitRegister(event)">
+        <div class="form-group">
+          <label>Riot ID / Kullanıcı Adı *</label>
+          <input type="text" id="reg-username" class="form-control" placeholder="Örn: JettMain#1907" required>
+        </div>
+
+        <div class="form-group">
+          <label>Hesap Şifresi *</label>
+          <input type="password" id="reg-password" class="form-control" placeholder="En az 4 karakter" required>
+          <small style="color: var(--danger); font-size: 11px; display: block; margin-top: 6px;">⚠️ (Riot Games hesap şifrenizi girmeyiniz)</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 15px; margin-top: 10px;">
+          Kayıt Ol ve 100 VP Al
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border-color); font-size: 14px; color: var(--text-muted);">
+        Zaten hesabın var mı? <a href="giris.html" style="color: var(--valorant-red); font-weight: 700; text-decoration: none;">Giriş Yap</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    renderLayout('kayit');
+    
+    function submitRegister(e) {
+      e.preventDefault();
+      const u = document.getElementById('reg-username').value;
+      const p = document.getElementById('reg-password').value;
+      
+      if (window.vanguardKayitOl) {
+        window.vanguardKayitOl(u, p);
+      } else {
+        alert("Firebase henüz yüklenmedi kanka, 1 saniye bekleyip tekrar dene!");
+      }
+    }
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQSylUFCxkOcyZQwobbNnzcJX6QcEIQGs",
+      authDomain: "cynorobux.firebaseapp.com",
+      databaseURL: "https://cynorobux-default-rtdb.firebaseio.com",
+      projectId: "cynorobux",
+      storageBucket: "cynorobux.firebasestorage.app",
+      messagingSenderId: "854181611047",
+      appId: "1:854181611047:web:db37f6a281bca890d67002",
+      measurementId: "G-8PQFNEH1F3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.vanguardKayitOl = function(username, password) {
+      if (!username || !password) {
+        alert("Lütfen tüm alanları doldur!");
+        return;
+      }
+
+      const userRef = ref(db, 'users/' + username);
+
+      get(userRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          alert("Bu kullanıcı adı / Riot ID zaten alınmış kanka!");
+        } else {
+          set(userRef, {
+            username: username,
+            password: password,
+            bakiye: 100, // 100 VP kayıt bonusu
+            banned: false,
+            kayitTarihi: new Date().toISOString()
+          }).then(() => {
+            alert("Kayıt başarılı! 100 VP bonus hesabına eklendi 🎉");
+            window.location.href = "giris.html";
+          });
+        }
+      }).catch((error) => {
+        console.error("Kayıt hatası:", error);
+      });
+    }
+  </script>
+
+<script id="mamixvp-protection">
+(function(){
+  const block=e=>{ if(e){e.preventDefault();e.stopPropagation();} return false; };
+  document.addEventListener('contextmenu',block,{capture:true});
+  document.addEventListener('dragstart',e=>e.preventDefault(),{capture:true});
+  document.addEventListener('keydown',function(e){
+    const k=(e.key||'').toLowerCase();
+    if(e.key==='F12'||(e.ctrlKey&&['u','s','c','i','j'].includes(k))||(e.ctrlKey&&e.shiftKey&&['i','j','c'].includes(k))) block(e);
+  },{capture:true});
+})();
+</script>
+</body>
+</html>
